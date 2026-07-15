@@ -12,6 +12,7 @@ Node.js + Express + MongoDB (Mongoose) backend.
 ## Endpoints
 
 - `GET /health` — health check
-- `POST /api/auth/register` — { name, email, password }
 - `POST /api/auth/login` — { email, password }
 - `GET /api/auth/me` — requires `Authorization: Bearer <token>`
+- `POST /api/auth/forgot-password` — { email }, sends a reset link if the account exists
+- `POST /api/auth/reset-password` — { token, password }
