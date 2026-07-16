@@ -12,11 +12,6 @@ const posts = [
     metaTitle: "5 Ways a CRM Improves Customer Retention | CRM-admin",
     metaDescription: "Learn five practical ways a CRM system helps you retain more customers and reduce churn.",
     metaKeywords: ["crm", "customer retention", "customer success"],
-    schemaMarkup: {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      headline: "5 Ways a CRM Improves Customer Retention",
-    },
     status: "published",
   },
   {
@@ -26,11 +21,6 @@ const posts = [
     metaTitle: "Getting Started with Sales Pipelines | CRM-admin",
     metaDescription: "A beginner's guide to structuring an effective sales pipeline in your CRM.",
     metaKeywords: ["sales pipeline", "crm setup", "sales process"],
-    schemaMarkup: {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      headline: "Getting Started with Sales Pipelines",
-    },
     status: "published",
   },
   {
@@ -40,7 +30,6 @@ const posts = [
     metaTitle: "Automating Follow-Up Emails Without Sounding Robotic | CRM-admin",
     metaDescription: "Tips for setting up automated email follow-ups that still feel personal.",
     metaKeywords: ["email automation", "follow-up", "sales emails"],
-    schemaMarkup: null,
     status: "draft",
   },
   {
@@ -50,11 +39,6 @@ const posts = [
     metaTitle: "Understanding Lead Scoring | CRM-admin",
     metaDescription: "A practical introduction to building a lead scoring model for your sales team.",
     metaKeywords: ["lead scoring", "sales qualification", "crm"],
-    schemaMarkup: {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      headline: "Understanding Lead Scoring",
-    },
     status: "published",
   },
 ];

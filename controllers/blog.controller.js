@@ -3,6 +3,12 @@ import path from "path";
 import Blog from "../models/blog.model.js";
 import { slugify } from "../utils/slugify.js";
 import { uploadDir } from "../middlewares/upload.middleware.js";
+import { buildBlogSchemaMarkup } from "../utils/blogSchema.js";
+
+const withSchemaMarkup = (blog, req) => ({
+  ...blog.toObject(),
+  schemaMarkup: buildBlogSchemaMarkup(blog, req),
+});
 
 const deleteImageFile = (imagePath) => {
   if (!imagePath) return;
@@ -19,18 +25,6 @@ const parseKeywords = (value) => {
       .filter(Boolean);
   }
   return [];
-};
-
-const parseSchema = (value) => {
-  if (!value) return null;
-  if (typeof value === "object") return value;
-  try {
-    return JSON.parse(value);
-  } catch {
-    const err = new Error("Schema (JSON-LD) must be valid JSON");
-    err.statusCode = 400;
-    throw err;
-  }
 };
 
 // MongoDB's hard per-document limit is 16MB (BSON). This keeps content safely
@@ -68,7 +62,6 @@ export const createBlog = async (req, res, next) => {
       return res.status(409).json({ message: "Slug already in use" });
     }
 
-    const schemaMarkup = parseSchema(req.body.schemaMarkup);
     const resolvedStatus = status === "published" ? "published" : "draft";
 
     const blog = await Blog.create({
@@ -78,14 +71,13 @@ export const createBlog = async (req, res, next) => {
       metaTitle,
       metaDescription,
       metaKeywords: parseKeywords(req.body.metaKeywords),
-      schemaMarkup,
       featuredImage: featuredImage || "",
       status: resolvedStatus,
       publishedAt: resolvedStatus === "published" ? new Date() : null,
       author: req.userId,
     });
 
-    res.status(201).json({ blog });
+    res.status(201).json({ blog: withSchemaMarkup(blog, req) });
   } catch (err) {
     next(err);
   }
@@ -116,7 +108,6 @@ export const updateBlog = async (req, res, next) => {
     if (metaTitle !== undefined) blog.metaTitle = metaTitle;
     if (metaDescription !== undefined) blog.metaDescription = metaDescription;
     if (req.body.metaKeywords !== undefined) blog.metaKeywords = parseKeywords(req.body.metaKeywords);
-    if (req.body.schemaMarkup !== undefined) blog.schemaMarkup = parseSchema(req.body.schemaMarkup);
 
     if (req.body.featuredImage !== undefined && req.body.featuredImage !== blog.featuredImage) {
       deleteImageFile(blog.featuredImage);
@@ -129,7 +120,7 @@ export const updateBlog = async (req, res, next) => {
     }
 
     await blog.save();
-    res.status(200).json({ blog });
+    res.status(200).json({ blog: withSchemaMarkup(blog, req) });
   } catch (err) {
     next(err);
   }
@@ -165,7 +156,7 @@ export const getAdminBlogById = async (req, res, next) => {
   try {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ message: "Blog not found" });
-    res.status(200).json({ blog });
+    res.status(200).json({ blog: withSchemaMarkup(blog, req) });
   } catch (err) {
     next(err);
   }
@@ -231,7 +222,7 @@ export const getPublicBlogBySlug = async (req, res, next) => {
   try {
     const blog = await Blog.findOne({ slug: req.params.slug, status: "published" });
     if (!blog) return res.status(404).json({ message: "Blog not found" });
-    res.status(200).json({ blog });
+    res.status(200).json({ blog: withSchemaMarkup(blog, req) });
   } catch (err) {
     next(err);
   }

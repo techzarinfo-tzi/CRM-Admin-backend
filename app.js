@@ -50,6 +50,16 @@ app.use(morgan("dev"));
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300 });
 app.use("/api", apiLimiter);
 
+// API responses reflect live, frequently-mutated data (e.g. the admin blog
+// list right after a create/update/delete). Without this, the absence of an
+// explicit freshness directive still lets browsers/proxies cache GETs
+// opportunistically, which shows up as "I have to refresh several times
+// before the change appears."
+app.use("/api", (req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
