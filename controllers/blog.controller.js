@@ -4,6 +4,7 @@ import Blog from "../models/blog.model.js";
 import { slugify } from "../utils/slugify.js";
 import { uploadDir } from "../middlewares/upload.middleware.js";
 import { buildBlogSchemaMarkup } from "../utils/blogSchema.js";
+import { revalidateBlogPages } from "../utils/revalidateFrontend.js";
 
 const withSchemaMarkup = (blog, req) => ({
   ...blog.toObject(),
@@ -77,6 +78,7 @@ export const createBlog = async (req, res, next) => {
       author: req.userId,
     });
 
+    revalidateBlogPages([blog.slug]);
     res.status(201).json({ blog: withSchemaMarkup(blog, req) });
   } catch (err) {
     next(err);
@@ -88,6 +90,7 @@ export const updateBlog = async (req, res, next) => {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ message: "Blog not found" });
 
+    const previousSlug = blog.slug;
     const { title, content, metaTitle, metaDescription, status } = req.body;
 
     assertContentSize(content);
@@ -120,6 +123,7 @@ export const updateBlog = async (req, res, next) => {
     }
 
     await blog.save();
+    revalidateBlogPages([previousSlug, blog.slug]);
     res.status(200).json({ blog: withSchemaMarkup(blog, req) });
   } catch (err) {
     next(err);
@@ -131,6 +135,7 @@ export const deleteBlog = async (req, res, next) => {
     const blog = await Blog.findByIdAndDelete(req.params.id);
     if (!blog) return res.status(404).json({ message: "Blog not found" });
     deleteImageFile(blog.featuredImage);
+    revalidateBlogPages([blog.slug]);
     res.status(200).json({ message: "Blog deleted" });
   } catch (err) {
     next(err);
@@ -146,6 +151,7 @@ export const toggleBlogStatus = async (req, res, next) => {
     blog.publishedAt = blog.status === "published" ? new Date() : null;
     await blog.save();
 
+    revalidateBlogPages([blog.slug]);
     res.status(200).json({ blog });
   } catch (err) {
     next(err);
