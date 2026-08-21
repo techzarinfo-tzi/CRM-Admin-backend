@@ -2,8 +2,8 @@ const trimTrailingSlash = (v) => (v || "").replace(/\/+$/, "");
 
 // Canonical public site the blog lives on (the Next.js site), used to build
 // mainEntityOfPage.@id in the generated schema.
-const SITE_URL = trimTrailingSlash(process.env.SITE_URL) || "https://www.techzarinfo.com";
-const BLOG_PATH_PREFIX = process.env.BLOG_PATH_PREFIX || "/blogs";
+const SITE_URL = trimTrailingSlash(process.env.SITE_URL) || "https://tzicrm.com";
+const BLOG_PATH_PREFIX = process.env.BLOG_PATH_PREFIX || "/blog";
 
 // This backend's own public origin, used to turn stored relative asset paths
 // (e.g. "/uploads/blogs/xxx.jpg") into absolute URLs. Falls back to the

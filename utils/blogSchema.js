@@ -1,10 +1,10 @@
 import { blogCanonicalUrl, toAbsoluteAssetUrl } from "./publicUrl.js";
 
-const ORG_NAME = process.env.ORG_NAME || "Techzarinfo";
-const ORG_URL = process.env.ORG_URL || "https://www.techzarinfo.com/";
+const ORG_NAME = process.env.ORG_NAME || "TZI CRM";
+const ORG_URL = process.env.ORG_URL || "https://tzicrm.com/";
 const ORG_LOGO_URL =
   process.env.ORG_LOGO_URL ||
-  "https://www.techzarinfo.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FTZI%20Logo-04.966a53cd.png&w=1080&q=75";
+  "https://tzicrm.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FTZI%20Logo-04.966a53cd.png&w=1080&q=75";
 
 const stripHtml = (html) =>
   (html || "")
@@ -22,6 +22,7 @@ const buildDescription = (blog) => {
 // it's always structurally valid JSON and always in sync with the post's
 // current title/image/dates — there is nothing left for an admin to hand-type
 // (and therefore nothing left to get wrong).
+
 export const buildBlogSchemaMarkup = (blog, req) => {
   const publishedAt = blog.publishedAt || blog.createdAt;
   const modifiedAt = blog.updatedAt || publishedAt;
